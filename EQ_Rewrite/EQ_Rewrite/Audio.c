@@ -77,6 +77,41 @@ void writeWavHead(FILE* fp, Wav* info) // Writes standard Wav header format to f
 }
 
 
+void bufferAudio(FILE* fp, Wav* info, Sample* samples, int offset)
+{
+	if (info->chn != 1)
+	{
+		printf("\nInvalid Channel Count\n");
+		return;
+	}
+
+	fseek(fp, DATA_START + offset, SEEK_SET);
+
+	int byte_width = info->sample_size / 8;
+
+	for (int i = 0; i < BUFFER_SIZE; i++)
+	{
+
+		uint8_t byte = 0;
+		for (int j = 0; j < byte_width; j++) // Read byte by byte into sample data
+		{
+			byte = fgetc(fp);
+			(samples + i)->buffer[j] = byte;
+		}
+		for (int j = 0; j < (sizeof(Sample) - byte_width); j++) // Sign extend remaining bytes in sample
+		{
+			if (byte & 0x80)
+				(samples + i)->buffer[j + byte_width] = 0xFF;
+			else
+				(samples + i)->buffer[j + byte_width] = 0;
+		}
+		
+	}
+
+	return;
+}
+
+
 void writeBuffer(FILE* fp, Wav* info, Sample* samples, int offset)
 {
 	if (info->chn != 1)

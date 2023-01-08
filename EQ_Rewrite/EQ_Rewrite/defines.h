@@ -12,7 +12,7 @@
 
 #define MAX_FREQ 32768
 #define EQ_BAND_COUNT 12
-#define BUFFER_SIZE 8192//128
+#define BUFFER_SIZE 16384 // Low buffer size not optimized due to high volume of read and write opperations required, use ~8192 Samples at least
 #define DATA_START 44
 
 

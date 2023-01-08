@@ -30,9 +30,6 @@
     <ClCompile Include="eq.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IFFT.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FFT.h">
@@ -48,9 +45,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="eq.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IFFT.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

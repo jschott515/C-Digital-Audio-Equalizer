@@ -142,7 +142,6 @@
     <ClCompile Include="Buffer.c" />
     <ClCompile Include="eq.c" />
     <ClCompile Include="FFT.c" />
-    <ClCompile Include="IFFT.c" />
     <ClCompile Include="Source.c" />
   </ItemGroup>
   <ItemGroup>
@@ -151,7 +150,6 @@
     <ClInclude Include="defines.h" />
     <ClInclude Include="eq.h" />
     <ClInclude Include="FFT.h" />
-    <ClInclude Include="IFFT.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

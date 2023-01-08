@@ -4,65 +4,63 @@
 #include "Buffer.h"
 #include "eq.h"
 #include "FFT.h"
-#include "IFFT.h"
 
-void applyEQ();
+void applyEQ(const char* file1, const char* file2);
 
 int main(int argc, char** argv)
 {
-	duplicateWAV("snare1.wav", "snare2.wav");
+	//duplicateWAV("StarWars60.wav", "StarWarsCopy.wav");
 
-	applyEQ();
+	applyEQ("StarWars.wav", "StarWars_eq.wav");
 
 	_CrtDumpMemoryLeaks();
 }
 
 
-void applyEQ()
+void applyEQ(const char* file1, const char* file2)
 {
-	EQ* levels = malloc(sizeof(EQ) * EQ_BAND_COUNT);
-	(void)initEQbands(levels);
+	EQ* levels = initEQbands();	// Initialize EQ
 
-	printf("\nEQ Bands:\n\n FREQ   \tGAIN\n------------------------\n");
-	for (int i = 1; i < EQ_BAND_COUNT - 1; i++)
-	{
-		printf("%5d Hz\t%.1f dB\n", (levels + i)->frequencyBand, 20 * log10((levels + i)->scalarGain));
-	}
-
-	Complex* H = malloc(sizeof(Complex) * MAX_FREQ); // H(w) frequency response for 0kHz -> 32.768kHz (best size for radix-2 DFT)
-	(void)generateEQfreqResp(levels, H);
+	Complex* H = generateEQfreqResp(levels); // H(w) frequency response for 0kHz -> 32.768kHz (best size for radix-2 DFT)
 	free(levels);
+	
+	FILE* fp1 = fopen(file1, "rb"); // Open source file and destination file
+	FILE* fp2 = fopen(file2, "wb");
 
-	FILE* fp1 = fopen("snare1.wav", "rb");
-	FILE* fp2 = fopen("snare1_eq.wav", "wb");
-	Wav* info = parseWAV(fp1);
+	Wav* info = parseWAV(fp1); // Read .wav data from source file header and copy to destination file
 	writeWavHead(fp2, info);
 
 	int byte_width = info->sample_size / 8;
 	int sample_count = info->data_size / byte_width;
 
-	Buffer* audio = initBuffer();
-	Complex* data = calloc(sizeof(Complex), MAX_FREQ);
+	Buffer* audio = initBuffer(); // Buffer for incoming audio chunks/blocks
+	Complex* data = calloc(sizeof(Complex), MAX_FREQ); // allocate memory for data and result
 	Sample* eq_data = malloc(sizeof(Sample) * BUFFER_SIZE);
 
-	for (int i = 0; i < sample_count / BUFFER_SIZE; i++)
+	Complex* FFTmul = initFFTMultiplier(); // Pre-evaluate W_N ^ +/-nk values for FFT/IFFT Computation
+	Complex* IFFTmul = initIFFTMultiplier();
+	
+	for (int i = 0; i < (sample_count / BUFFER_SIZE); i++) // Compute convolution in n sized partitions
 	{
-		bufferBlock(audio, fp1, info, i * BUFFER_SIZE * byte_width);
-		formatForFFT(audio, data);
-		FFT(&data);
+		bufferBlock(audio, fp1, info, i * BUFFER_SIZE * byte_width); // Load next data block
+		formatForFFT(audio, data); // Rearrange in reverse-bit order as complex numbers for FFT
+		FFT(&data, FFTmul); // Compute FFT in array data
 
-		for (int j = 0; j < MAX_FREQ; j++)
+		for (int j = 0; j < MAX_FREQ; j++) // Multiply arrays H(n)X(n) for convolution
 		{
 			mulComplex((data + j), (H + j));
 		}
 
-		IFFT(&data, eq_data);
-		writeBuffer(fp2, info, eq_data, (i * BUFFER_SIZE * byte_width));
-		
+		IFFT(&data, eq_data, IFFTmul); // Convert back to time domain and write to file
+		writeBuffer(fp2, info, eq_data, (i * BUFFER_SIZE * byte_width));		
 	}
+
 	freeBuffer(audio);
+	free(H);
 	free(data);
 	free(eq_data);
+	free(FFTmul);
+	free(IFFTmul);
 	free(info);
 
 	fclose(fp1);

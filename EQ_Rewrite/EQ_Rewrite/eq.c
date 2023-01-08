@@ -1,14 +1,17 @@
 #include "eq.h"
 
 
-int initEQbands(EQ* levels) // Initialize EQ struct array default
+EQ* initEQbands() // Initialize EQ struct array default
 {
+	EQ* levels = malloc(sizeof(EQ) * EQ_BAND_COUNT);
+
 	levels->frequencyBand = 0; // 0Hz, 1 gain... Used to extrapolate first EQ band
 	levels->scalarGain = 1;
 
 	int baseFRQ = 32;
-	//float vals[] = { 1.2, 1.2, 1.2, 1.2, 1.2, .001, .001, .001, .001, .001}; //bass boost
-	float vals[] = { .001, .001, .001, .001, .001, 1.4, 1.4, 1.4, 1.4, 1.4 }; //treb boost
+	//float vals[] = { 1, 1, 1, 1, 1, .001, .001, .001, .001, .001}; //treb reduce
+	float vals[] = { .001, .001, .001, .001, .001, 1.4, 1.4, 1.4, 1.4, 1.4 }; //bass reduce
+
 	for (int i = 1; i < EQ_BAND_COUNT - 1; i++)
 	{
 		(levels + i)->frequencyBand = baseFRQ;
@@ -19,12 +22,14 @@ int initEQbands(EQ* levels) // Initialize EQ struct array default
 	(levels + EQ_BAND_COUNT - 1)->frequencyBand = MAX_FREQ; // Used to extrapolate last EQ band
 	(levels + EQ_BAND_COUNT - 1)->scalarGain = 1;
 
-	return 0;
+	return levels;
 }
 
 
-int generateEQfreqResp(EQ* levels, Complex* freqRespH) // Generate complete frequency response data based on EQ bands
+Complex* generateEQfreqResp(EQ* levels) // Generate complete frequency response data based on EQ bands
 {
+	Complex* freqRespH = malloc(sizeof(Complex) * MAX_FREQ);
+
 	int addr = 0;
 	for (int i = 0; i < EQ_BAND_COUNT; i++)
 	{
@@ -34,7 +39,7 @@ int generateEQfreqResp(EQ* levels, Complex* freqRespH) // Generate complete freq
 		addr += x_diff;
 	}
 
-	return 0;
+	return freqRespH;
 }
 
 

@@ -3,14 +3,10 @@
 
 #include "defines.h"
 
-
 Buffer* initBuffer();
 void printBuffer(Buffer* buffer);
 void bufferBlock(Buffer* buffer, FILE* fp, Wav* info, int offset);
 void formatForFFT(Buffer* buffer, Complex* x);
 void freeBuffer(Buffer* buffer);
-
-
-void bufferAudio(FILE* fp, Wav* info, Sample* samples, int offset);
 
 #endif
