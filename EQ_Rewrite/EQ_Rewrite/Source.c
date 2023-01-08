@@ -9,9 +9,7 @@ void applyEQ(const char* file1, const char* file2);
 
 int main(int argc, char** argv)
 {
-	//duplicateWAV("StarWars60.wav", "StarWarsCopy.wav");
-
-	applyEQ("StarWars.wav", "StarWars_eq.wav");
+	applyEQ("StarWars.wav", "StarWars_EQ.wav");
 
 	_CrtDumpMemoryLeaks();
 }
@@ -44,14 +42,14 @@ void applyEQ(const char* file1, const char* file2)
 	{
 		bufferBlock(audio, fp1, info, i * BUFFER_SIZE * byte_width); // Load next data block
 		formatForFFT(audio, data); // Rearrange in reverse-bit order as complex numbers for FFT
-		FFT(&data, FFTmul); // Compute FFT in array data
+		FFT(data, FFTmul); // Compute FFT in array data
 
 		for (int j = 0; j < MAX_FREQ; j++) // Multiply arrays H(n)X(n) for convolution
 		{
 			mulComplex((data + j), (H + j));
 		}
 
-		IFFT(&data, eq_data, IFFTmul); // Convert back to time domain and write to file
+		IFFT(data, eq_data, IFFTmul); // Convert back to time domain and write to file
 		writeBuffer(fp2, info, eq_data, (i * BUFFER_SIZE * byte_width));		
 	}
 

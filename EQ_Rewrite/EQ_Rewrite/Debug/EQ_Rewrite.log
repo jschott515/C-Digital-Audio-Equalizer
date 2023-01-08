@@ -1,36 +1,4 @@
-﻿  Audio.c
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(18,26): warning C4013: 'malloc' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(26,6): warning C4013: 'free' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(18,1): warning C4047: 'initializing': 'Sample *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(51,11): warning C4047: 'return': 'Wav *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(37,1): warning C4047: 'initializing': 'Wav *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Audio.c(101,21): warning C4018: '<': signed/unsigned mismatch
-  Buffer.c
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(6,25): warning C4013: 'malloc' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(8,38): warning C4047: '=': 'Block *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(9,32): warning C4013: 'calloc' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(9,61): warning C4047: '=': 'Sample *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(17,54): warning C4047: '=': 'Sample *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(6,1): warning C4047: 'initializing': 'Buffer *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(16,1): warning C4047: 'initializing': 'Block *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(33,54): warning C4047: '=': 'Sample *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(34,13): warning C4013: 'bufferAudio' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(44,6): warning C4013: 'free' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(32,1): warning C4047: 'initializing': 'Block *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(71,27): warning C4013: 'reverseBits' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(77,10): warning C4098: 'formatForFFT': 'void' function returning a value
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Buffer.c(82,1): warning C4142: 'reverseBits': benign redefinition of type
-  FFT.c
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(9,27): warning C4013: 'malloc' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(15,7): warning C4013: 'free' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(9,1): warning C4047: 'initializing': 'Complex *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(26,1): warning C4047: 'initializing': 'Complex *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(29,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(74,26): warning C4013: 'reverseBits' undefined; assuming extern returning int
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(60,1): warning C4047: 'initializing': 'Complex *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(85,1): warning C4047: 'initializing': 'Complex *' differs in levels of indirection from 'int'
-C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\FFT.c(88,1): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Source.c
+﻿  Source.c
 C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Source.c(16,21): warning C4013: '_CrtDumpMemoryLeaks' undefined; assuming extern returning int
 C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Source.c(25,6): warning C4013: 'free' undefined; assuming extern returning int
 C:\Users\jscho\Documents\GitHub\EQ-Rewrite\EQ_Rewrite\EQ_Rewrite\Source.c(37,24): warning C4013: 'calloc' undefined; assuming extern returning int

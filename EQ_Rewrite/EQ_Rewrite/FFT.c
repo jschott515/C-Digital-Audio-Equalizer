@@ -1,19 +1,16 @@
 #include "FFT.h"
 
 
-void FFT(Complex** x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t). Shifts result to place impulse in center of signal
+void FFT(Complex* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t). Shifts result to place impulse in center of signal
 {
 	// CALCULATE IFFT //////////////////////////////////////////////////////////
 	for (int i = 2; i <= MAX_FREQ; i *= 2) //  Stages of cascading DFT stage blocks
 	{
-		Complex* result = malloc(sizeof(Complex) * MAX_FREQ);
 		for (int j = 0; j < MAX_FREQ / i; j++) // nlog(n) total dft multiplier blocks 
 		{
 			int offset = i * j;
-			executeFFTStage(i, (*x + offset), (result + offset), mul);
+			executeFFTStage(i, (x + offset), mul);
 		}
-		free(*x); // Note - original frequency response data is lost
-		*x = result; // shallow copy array
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -34,7 +31,7 @@ Complex* initFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nkp
 }
 
 
-void executeFFTStage(int task_size, Complex* x, Complex* result, Complex* mul)
+void executeFFTStage(int task_size, Complex* x, Complex* mul)
 {
 	for (int i = 0; i < task_size / 2; i++)
 		mulComplex((x + i + task_size / 2), (mul + (i * MAX_FREQ / task_size)));
@@ -44,27 +41,24 @@ void executeFFTStage(int task_size, Complex* x, Complex* result, Complex* mul)
 		Complex add = { (x + i)->real + (x + i + task_size / 2)->real, (x + i)->imag + (x + i + task_size / 2)->imag };
 		Complex sub = { (x + i)->real - (x + i + task_size / 2)->real, (x + i)->imag - (x + i + task_size / 2)->imag };
 
-		*(result + i) = add;
-		*(result + i + task_size / 2) = sub;
+		*(x + i) = add;
+		*(x + i + task_size / 2) = sub;
 	}
 
 	return;
 }
 
 
-void IFFT(Complex** X, Sample* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t)
+void IFFT(Complex* X, Sample* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t)
 {
 	// CALCULATE IFFT //////////////////////////////////////////////////////////
 	for (int i = MAX_FREQ; i > 1; i /= 2) //  Stages of cascading DFT stage blocks
 	{
-		Complex* result = malloc(sizeof(Complex) * MAX_FREQ);
 		for (int j = 0; j < MAX_FREQ / i; j++) // nlog(n) total dft multiplier blocks 
 		{
 			int offset = i * j;
-			executeIFFTStage(i, (*X + offset), (result + offset), mul);
+			executeIFFTStage(i, (X + offset), mul);
 		}
-		free(*X); // Note - original frequency response data is lost
-		*X = result; // shallow copy array
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -73,7 +67,7 @@ void IFFT(Complex** X, Sample* x, Complex* mul) // Inverse Fast Fourier Transfor
 	{
 		int index = reverseBits(i) + BUFFER_SIZE - MAX_FREQ; // Translated and shifted index..
 		if (index >= 0)
-			x[index].data = (int)(*X + i)->real;
+			x[index].data = (int)(X + i)->real;
 	}
 
 	return;
@@ -93,22 +87,22 @@ Complex* initIFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nk
 }
 
 
-void executeIFFTStage(int task_size, Complex* X, Complex* result, Complex* mul) // Probably want to modify this implementation to be a single function called once per stage...
+void executeIFFTStage(int task_size, Complex* X, Complex* mul) // Probably want to modify this implementation to be a single function called once per stage...
 {
 	for (int i = 0; i < task_size / 2; i++)
 	{
 		Complex add = { (X + i)->real + (X + i + task_size / 2)->real, (X + i)->imag + (X + i + task_size / 2)->imag };
 		Complex sub = { (X + i)->real - (X + i + task_size / 2)->real, (X + i)->imag - (X + i + task_size / 2)->imag };
 
-		*(result + i) = add;
-		*(result + i + task_size / 2) = sub;
+		*(X + i) = add;
+		*(X + i + task_size / 2) = sub;
 	}
 	if (task_size != 2) // All multiplications are by 1 for this case, ignore...
 		for (int i = 0; i < task_size / 2; i++)
-			mulComplex((result + i + task_size / 2), (mul + (i * MAX_FREQ / task_size)));
+			mulComplex((X + i + task_size / 2), (mul + (i * MAX_FREQ / task_size)));
 	else
 		for (int i = 0; i < task_size; i++)
-			(result + i)->real /= MAX_FREQ; // Final Step
+			(X + i)->real /= MAX_FREQ; // Final Step
 
 	return;
 }

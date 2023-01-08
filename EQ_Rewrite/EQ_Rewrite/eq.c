@@ -9,8 +9,8 @@ EQ* initEQbands() // Initialize EQ struct array default
 	levels->scalarGain = 1;
 
 	int baseFRQ = 32;
-	//float vals[] = { 1, 1, 1, 1, 1, .001, .001, .001, .001, .001}; //treb reduce
-	float vals[] = { .001, .001, .001, .001, .001, 1.4, 1.4, 1.4, 1.4, 1.4 }; //bass reduce
+	//float vals[] = { 1.73, 1.73, 1.73, 1.73, 1.31, .88, .67, .44, .33, .26 }; //Full Bass Preset
+	float vals[] = { .5, .63, .63, .63, .79, 1, 1.13, 1.88, 2.5, 2.5 }; //Full Treble Preset
 
 	for (int i = 1; i < EQ_BAND_COUNT - 1; i++)
 	{
