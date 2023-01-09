@@ -1,7 +1,7 @@
 #include "FFT.h"
 
 
-void FFT(Complex* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t). Shifts result to place impulse in center of signal
+void FFT(Complex* x, Complex* mul) // Fast Fourier Transform of the Time Domain Audio signal to produce the Frequency Response Spectrum
 {
 	for (int i = 2; i <= K; i *= 2) //  Stages of cascading DFT stage blocks
 	{
@@ -16,7 +16,7 @@ void FFT(Complex* x, Complex* mul) // Inverse Fast Fourier Transform of frequenc
 }
 
 
-Complex* initFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nkpi/N) = cos(2nkpi/N) + sin(2nkpi/N)j for N/2 number of frequencies 
+Complex* initFFTMultiplier() // Creates array with values W_N ^ nk = e^-j(2nkpi/N) = cos(-2nkpi/N) + sin(-2nkpi/N)j for N/2 number of frequencies
 {
 	Complex* arr = malloc(sizeof(Complex) * (K / 2));
 	for (int n = 0; n < K / 2; n++) // Populate data to avoid redundant multiplications
