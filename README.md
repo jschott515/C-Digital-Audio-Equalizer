@@ -1,2 +1,2 @@
-# EQ-Rewrite
- Rewrite of C-Digital-Audio-Equalizer
+# C Digital Audio Equalizer
+A program written in C to apply a digital EQ effect to .wav audio files. Implements a radix-2 Inverse Fast Fourier Transform algorithm and an Overlap-Save Scheme Convolution algorithm to transform the original audio signal and write the result to a new .wav file. While any high level programming language such as MATLAB or Python would be far better equipped to handle this task in just a few lines of code, the purpose of this project was to implement common digital signal processing techniques at a low level to develop a better understanding of the underlying theory behind such computations.
