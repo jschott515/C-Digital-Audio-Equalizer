@@ -9,8 +9,10 @@ EQ* initEQbands() // Initialize EQ struct array default
 	levels->scalarGain = 1;
 
 	int baseFRQ = 32;
+	//float vals[] = { 1, 1, 1, 1, 1, .251, .251, .251, .251, .251}; //No treble
+	//float vals[] = { .251, .251, .251, .251, .251, 1, 1, 1, 1, 1 }; //No bass
 	//float vals[] = { 1.73, 1.73, 1.73, 1.73, 1.31, .88, .67, .44, .33, .26 }; //Full Bass Preset
-	float vals[] = { .5, .63, .63, .63, .79, 1, 1.13, 1.88, 2.5, 2.5 }; //Full Treble Preset
+	float vals[] = { .5, .63, .63, .63, .79, 1, 1.13, 1.88, 2.2, 2.0 }; //Full Treble Preset
 
 	for (int i = 1; i < EQ_BAND_COUNT - 1; i++)
 	{
@@ -26,32 +28,36 @@ EQ* initEQbands() // Initialize EQ struct array default
 }
 
 
-Complex* generateEQfreqResp(EQ* levels) // Generate complete frequency response data based on EQ bands
+Complex* generateEQfreqResp(int Fs, EQ* levels) // Generate complete frequency response data based on EQ bands and sampling frequency
 {
-	Complex* freqRespH = malloc(sizeof(Complex) * MAX_FREQ);
-
-	int addr = 0;
-	for (int i = 0; i < EQ_BAND_COUNT; i++)
-	{
-		int x_diff = (levels + i + 1)->frequencyBand - (levels + i)->frequencyBand;
-		float y_diff = (levels + i + 1)->scalarGain - (levels + i)->scalarGain;
-		extrapolate_linear(x_diff, y_diff, (levels + i)->scalarGain, (freqRespH + addr)); // Get EQ Band i to EQ Band i + 1...
-		addr += x_diff;
-	}
-
+	Complex* freqRespH = malloc(sizeof(Complex) * K); // K-sized complex number array for frequency response 
+	extrapolate_linear(Fs, levels, freqRespH);
 	return freqRespH;
 }
 
 
-int extrapolate_linear(int x_diff, float y_diff, float y_offset, Complex* result) // Populate frequency response result array for data points A and B using linear extrapolation
+void extrapolate_linear(int Fs, EQ* levels, Complex* result) // Extrapolate Frequency Bands to K-sized array result. Includes Aliasing region for frequencies > Nyquist Frequency
 {
-	float slope = y_diff / x_diff;
+	float resolution = Fs / (float)K; // Delta_f frequency resolution
+	EQ* current = levels;
+	EQ* next = levels + 1;
+	float start_bin = 0;
+	float slope = (next->scalarGain - current->scalarGain) / (float)(next->frequencyBand - current->frequencyBand); // m = (Y2 - Y1) / (X2 - X1)
 
-	for (int i = 0; i < x_diff; i++) // Investigate placing eq bands on unevenly divided intervals, account for remaineder in this division.... helps if all EQ bands are div. by resolution
+	for (int n = 0; n < K / 2; n++) // For Frequencies 0 Hz -> Nyquist Frequency
 	{
-		Complex temp = { y_offset + (slope * i), 0 };
-		*(result + i) = temp;
-	}
+		float bin_frq = n * resolution; // Bin N = n * Delta_f
+		if (bin_frq > next->frequencyBand) // Update values used to calculate slope
+		{
+			current = next;
+			next = next + 1;
+			start_bin = bin_frq;
+			slope = (next->scalarGain - current->scalarGain) / (float)(next->frequencyBand - current->frequencyBand);
+		}
 
-	return 0;
+		Complex temp = { (slope * (bin_frq - start_bin)) + current->scalarGain,0 }; // y = mx + b, imaginary component set to 0.
+		result[n] = temp;
+		result[K - 1 - n] = temp; // Aliasing region - Mirrored Response
+	}
+	return;
 }

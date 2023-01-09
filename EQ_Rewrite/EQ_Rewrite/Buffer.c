@@ -11,7 +11,7 @@ Buffer* initBuffer()
 
 	Block* current = buffer->tail;
 
-	for (int i = 0; i < MAX_FREQ / BUFFER_SIZE - 1; i++) // Fill Buffer with Zeros
+	for (int i = 0; i < K / BUFFER_SIZE - 1; i++) // Fill Buffer with Zeros
 	{
 		Block* temp = malloc(sizeof(Block));
 		temp->samples = calloc(sizeof(Sample), BUFFER_SIZE);
@@ -27,11 +27,11 @@ Buffer* initBuffer()
 }
 
 
-void bufferBlock(Buffer* buffer, FILE* fp, Wav* info, int offset)
+void bufferBlock(Buffer* buffer, FILE* fp, Wav* info)
 {
 	Block* temp = malloc(sizeof(Block));
 	temp->samples = malloc(sizeof(Sample) * BUFFER_SIZE);
-	bufferAudio(fp, info, temp->samples, offset); // Load in new audio block
+	bufferAudio(fp, info, temp->samples); // Load in new audio block
 
 	temp->prev = NULL; // Update Buffer Head
 	temp->next = buffer->head;
@@ -82,9 +82,9 @@ unsigned int reverseBits(unsigned int num) // reverse bits in n wide bitfield to
 {
 	unsigned int reverse_num = 0;
 	int i;
-	for (i = 0; i < (int)log2(MAX_FREQ); i++) {
+	for (i = 0; i < (int)log2(K); i++) {
 		if ((num & (1 << i)))
-			reverse_num |= 1 << (((int)log2(MAX_FREQ) - 1) - i);
+			reverse_num |= 1 << (((int)log2(K) - 1) - i);
 	}
 	return reverse_num;
 }

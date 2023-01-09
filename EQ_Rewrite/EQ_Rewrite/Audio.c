@@ -1,37 +1,6 @@
 #include "Audio.h"
 
 
-void duplicateWAV(const char* file1, const char* file2)
-{
-	FILE* fp1 = fopen(file1, "rb");
-	FILE* fp2 = fopen(file2, "wb");
-	Wav* info = parseWAV(fp1);
-
-	writeWavHead(fp2, info);
-
-	fseek(fp1, DATA_START, SEEK_SET);
-	fseek(fp2, DATA_START, SEEK_SET);
-
-	int byte_width = info->sample_size / 8;
-	int sample_count = info->data_size / byte_width;
-
-	Sample* samples = malloc(sizeof(Sample) * BUFFER_SIZE);
-
-	for (int i = 0; i < (sample_count / BUFFER_SIZE); i++)
-	{
-		bufferAudio(fp1, info, samples, (i * BUFFER_SIZE * byte_width));
-		writeBuffer(fp2, info, samples, (i * BUFFER_SIZE * byte_width));
-	}
-
-	free(samples);
-	free(info);
-
-	fclose(fp1);
-	fclose(fp2);
-	return;
-}
-
-
 Wav* parseWAV(FILE* fp) // Populates Wav struct with data from file header
 {
 	Wav* info = malloc(sizeof(Wav));
@@ -77,15 +46,13 @@ void writeWavHead(FILE* fp, Wav* info) // Writes standard Wav header format to f
 }
 
 
-void bufferAudio(FILE* fp, Wav* info, Sample* samples, int offset)
+void bufferAudio(FILE* fp, Wav* info, Sample* samples)
 {
 	if (info->chn != 1)
 	{
 		printf("\nInvalid Channel Count\n");
 		return;
 	}
-
-	fseek(fp, DATA_START + offset, SEEK_SET);
 
 	int byte_width = info->sample_size / 8;
 
@@ -112,15 +79,13 @@ void bufferAudio(FILE* fp, Wav* info, Sample* samples, int offset)
 }
 
 
-void writeBuffer(FILE* fp, Wav* info, Sample* samples, int offset)
+void writeBuffer(FILE* fp, Wav* info, Sample* samples)
 {
 	if (info->chn != 1)
 	{
 		printf("\nInvalid Channel Count\n");
 		return;
 	}
-
-	fseek(fp, DATA_START + offset, SEEK_SET);
 
 	int byte_width = info->sample_size / 8;
 

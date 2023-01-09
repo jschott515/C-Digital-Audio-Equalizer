@@ -4,8 +4,7 @@
 #include "defines.h"
 
 Buffer* initBuffer();
-void printBuffer(Buffer* buffer);
-void bufferBlock(Buffer* buffer, FILE* fp, Wav* info, int offset);
+void bufferBlock(Buffer* buffer, FILE* fp, Wav* info);
 void formatForFFT(Buffer* buffer, Complex* x);
 void freeBuffer(Buffer* buffer);
 

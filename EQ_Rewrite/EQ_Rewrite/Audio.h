@@ -3,10 +3,9 @@
 
 #include "defines.h"
 
-void duplicateWAV(const char* file1, const char* file2);
 Wav* parseWAV(FILE* fp);
 void writeWavHead(FILE* fp, Wav* info);
-void bufferAudio(FILE* fp, Wav* info, Sample* samples, int offset);
-void writeBuffer(FILE* fp, Wav* info, Sample* samples, int offset);
+void bufferAudio(FILE* fp, Wav* info, Sample* samples);
+void writeBuffer(FILE* fp, Wav* info, Sample* samples);
 
 #endif // !AUDIO_H

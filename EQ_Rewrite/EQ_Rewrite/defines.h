@@ -10,26 +10,27 @@
 #include <math.h>
 
 
-#define MAX_FREQ 32768
+#define K 8192 // Size of FFT/IFFT - Yields ~2.7 Frequency Resolution for 22.05kHz audio
+#define BUFFER_SIZE 1024 // Size of data block to load into buffer
+#define MAX_FREQ 24000
 #define EQ_BAND_COUNT 12
-#define BUFFER_SIZE 16384 // Low buffer size not optimized due to high volume of read and write opperations required, use ~8192 Samples at least
-#define DATA_START 44
+#define DATA_START 44 // Start of data chunk in standard .wav file format
 
 
 typedef union SAMPLE {
-	int data;
+	int data; // Uses union to make integer sample data byte addressable, used to format n-width input sample data to 4-byte integers 
 	uint8_t buffer[4];
 } Sample;
 
 
 typedef struct BLOCK {
-	Sample* samples;
+	Sample* samples; // Buffer linked list element, stores input blocks of size BUFFER_SIZE
 	struct BLOCK* next, * prev;
 } Block;
 
 
 typedef struct BUFFER {
-	Block* head;
+	Block* head; // Linked List type data structure for buffering input in blocks, used to implement shifting window
 	Block* tail;
 } Buffer;
 

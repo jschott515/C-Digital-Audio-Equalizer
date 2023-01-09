@@ -3,16 +3,14 @@
 
 void FFT(Complex* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t). Shifts result to place impulse in center of signal
 {
-	// CALCULATE IFFT //////////////////////////////////////////////////////////
-	for (int i = 2; i <= MAX_FREQ; i *= 2) //  Stages of cascading DFT stage blocks
+	for (int i = 2; i <= K; i *= 2) //  Stages of cascading DFT stage blocks
 	{
-		for (int j = 0; j < MAX_FREQ / i; j++) // nlog(n) total dft multiplier blocks 
+		for (int j = 0; j < K / i; j++) // nlog(n) total dft multiplier blocks 
 		{
 			int offset = i * j;
 			executeFFTStage(i, (x + offset), mul);
 		}
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
 	return;
 }
@@ -20,10 +18,10 @@ void FFT(Complex* x, Complex* mul) // Inverse Fast Fourier Transform of frequenc
 
 Complex* initFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nkpi/N) = cos(2nkpi/N) + sin(2nkpi/N)j for N/2 number of frequencies 
 {
-	Complex* arr = malloc(sizeof(Complex) * (MAX_FREQ / 2));
-	for (int n = 0; n < MAX_FREQ / 2; n++) // Populate data to avoid redundant multiplications
+	Complex* arr = malloc(sizeof(Complex) * (K / 2));
+	for (int n = 0; n < K / 2; n++) // Populate data to avoid redundant multiplications
 	{
-		Complex temp = { cos(-2.0 * n * M_PI / MAX_FREQ), sin(-2.0 * n * M_PI / MAX_FREQ) };
+		Complex temp = { cos(-2.0 * n * M_PI / K), sin(-2.0 * n * M_PI / K) };
 		*(arr + n) = temp;
 	}
 
@@ -34,7 +32,7 @@ Complex* initFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nkp
 void executeFFTStage(int task_size, Complex* x, Complex* mul)
 {
 	for (int i = 0; i < task_size / 2; i++)
-		mulComplex((x + i + task_size / 2), (mul + (i * MAX_FREQ / task_size)));
+		mulComplex((x + i + task_size / 2), (mul + (i * K / task_size)));
 
 	for (int i = 0; i < task_size / 2; i++)
 	{
@@ -51,21 +49,18 @@ void executeFFTStage(int task_size, Complex* x, Complex* mul)
 
 void IFFT(Complex* X, Sample* x, Complex* mul) // Inverse Fast Fourier Transform of frequency spectra X to produce x(t)
 {
-	// CALCULATE IFFT //////////////////////////////////////////////////////////
-	for (int i = MAX_FREQ; i > 1; i /= 2) //  Stages of cascading DFT stage blocks
+	for (int i = K; i > 1; i /= 2) //  Stages of cascading DFT stage blocks
 	{
-		for (int j = 0; j < MAX_FREQ / i; j++) // nlog(n) total dft multiplier blocks 
+		for (int j = 0; j < K / i; j++) // nlog(n) total dft multiplier blocks 
 		{
 			int offset = i * j;
 			executeIFFTStage(i, (X + offset), mul);
 		}
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
-
-	for (int i = 0; i < MAX_FREQ; i++) // Reogranize calculated impulse response as real values in Sample array x, only keep valid bits (top block of X)
+	for (int i = 0; i < K; i++) // Reogranize calculated impulse response as real values in Sample array x, only keep valid bits (top block of X)
 	{
-		int index = reverseBits(i) + BUFFER_SIZE - MAX_FREQ; // Translated and shifted index..
+		int index = reverseBits(i) + BUFFER_SIZE - K; // Translated and shifted index..
 		if (index >= 0)
 			x[index].data = (int)(X + i)->real;
 	}
@@ -76,10 +71,10 @@ void IFFT(Complex* X, Sample* x, Complex* mul) // Inverse Fast Fourier Transform
 
 Complex* initIFFTMultiplier() // Creates array with values W_N ^ -nk = e^-j(2-nkpi/N) = cos(2nkpi/N) + sin(2nkpi/N)j for N/2 number of frequencies 
 {
-	Complex* arr = malloc(sizeof(Complex) * MAX_FREQ / 2);
-	for (int n = 0; n < MAX_FREQ / 2; n++) // Populate data to avoid redundant multiplications
+	Complex* arr = malloc(sizeof(Complex) * K / 2);
+	for (int n = 0; n < K / 2; n++) // Populate data to avoid redundant multiplications
 	{
-		Complex temp = { cos(2.0 * n * M_PI / MAX_FREQ), sin(2.0 * n * M_PI / MAX_FREQ) };
+		Complex temp = { cos(2.0 * n * M_PI / K), sin(2.0 * n * M_PI / K) };
 		*(arr + n) = temp;
 	}
 
@@ -99,10 +94,10 @@ void executeIFFTStage(int task_size, Complex* X, Complex* mul) // Probably want 
 	}
 	if (task_size != 2) // All multiplications are by 1 for this case, ignore...
 		for (int i = 0; i < task_size / 2; i++)
-			mulComplex((X + i + task_size / 2), (mul + (i * MAX_FREQ / task_size)));
+			mulComplex((X + i + task_size / 2), (mul + (i * K / task_size)));
 	else
 		for (int i = 0; i < task_size; i++)
-			(X + i)->real /= MAX_FREQ; // Final Step
+			(X + i)->real /= K; // Final Step
 
 	return;
 }
